@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐼 Create Pogo's Prediction Link</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        
+        .mascot-display {
+            text-align: center;
+            font-size: 80px;
+            margin: 20px 0;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .team-row {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .vs {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .result-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .result-section.show {
+            display: block;
+        }
+        
+        .generated-link {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            word-break: break-all;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 14px;
+            border: 2px solid #667eea;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .copy-btn {
+            flex: 1;
+            background: #4CAF50;
+        }
+        
+        .copy-btn:hover {
+            background: #45a049;
+        }
+        
+        .preview-btn {
+            flex: 1;
+            background: #2196F3;
+        }
+        
+        .preview-btn:hover {
+            background: #0b7dda;
+        }
+        
+        .success-msg {
+            color: #4CAF50;
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="mascot-display">🐼</div>
+        <h1>Create Prediction Link</h1>
+        <p class="subtitle">Generate a shareable link for Slack!</p>
+        
+        <div class="info-box">
+            💡 <strong>How it works:</strong> Create a prediction, get a link, paste it in Slack. People click to see Pogo's animated prediction!
+        </div>
+        
+        <div class="form-group">
+            <label>Match Title:</label>
+            <input type="text" id="matchTitle" value="World Cup 2026 - Group Stage" placeholder="e.g., World Cup 2026 - Quarter Final">
+        </div>
+        
+        <div class="team-row">
+            <div class="form-group">
+                <label>Home Team:</label>
+                <input type="text" id="homeTeam" value="Brazil" placeholder="e.g., Brazil">
+            </div>
+            <div class="vs">VS</div>
+            <div class="form-group">
+                <label>Away Team:</label>
+                <input type="text" id="awayTeam" value="Argentina" placeholder="e.g., Argentina">
+            </div>
+        </div>
+        
+        <button onclick="autoPredictAndGenerate()">🤖 Auto-Predict & Generate Link</button>
+        
+        <div class="result-section" id="resultSection">
+            <h3 style="color: #333; margin-bottom: 15px;">🎉 Your Prediction Link is Ready!</h3>
+            <p style="color: #666; margin-bottom: 10px;">Copy this link and paste it in Slack:</p>
+            <div class="generated-link" id="generatedLink"></div>
+            
+            <div class="action-buttons">
+                <button class="copy-btn" onclick="copyLink()">📋 Copy Link</button>
+                <button class="preview-btn" onclick="previewLink()">👁️ Preview</button>
+            </div>
+            
+            <div class="success-msg" id="successMsg">✅ Link copied! Now paste it in Slack!</div>
+            
+            <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 8px; font-size: 14px;">
+                <strong>📤 To share in Slack:</strong><br>
+                1. Copy the link above<br>
+                2. Paste it in your Slack channel<br>
+                3. People click to see Pogo's dancing prediction! 🐼
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Team strength database
+        const teamStrength = {
+            'Brazil': 95, 'Argentina': 93, 'France': 92, 'England': 90, 'Spain': 89,
+            'Germany': 88, 'Portugal': 87, 'Belgium': 86, 'Netherlands': 85, 'Italy': 84,
+            'Uruguay': 82, 'Croatia': 81, 'Denmark': 80, 'Mexico': 78, 'Switzerland': 77,
+            'USA': 76, 'Colombia': 75, 'Senegal': 74, 'Wales': 73, 'Poland': 72
+        };
+        
+        function getTeamStrength(team) {
+            return teamStrength[team] || (50 + Math.random() * 20);
+        }
+        
+        function autoPredictAndGenerate() {
+            const homeTeam = document.getElementById('homeTeam').value;
+            const awayTeam = document.getElementById('awayTeam').value;
+            const matchTitle = document.getElementById('matchTitle').value;
+            
+            if (!homeTeam || !awayTeam) {
+                alert('Please enter both team names!');
+                return;
+            }
+            
+            // Predict winner
+            const homeStrength = getTeamStrength(homeTeam);
+            const awayStrength = getTeamStrength(awayTeam);
+            const homeBonus = Math.random() * 10;
+            const formVariation = (Math.random() - 0.5) * 15;
+            
+            const adjustedHome = homeStrength + homeBonus + formVariation;
+            const adjustedAway = awayStrength + formVariation;
+            const difference = adjustedHome - adjustedAway;
+            
+            let winner, confidence;
+            if (Math.abs(difference) < 5) {
+                winner = 'draw';
+                confidence = 'medium';
+            } else if (difference > 15) {
+                winner = homeTeam;
+                confidence = 'high';
+            } else if (difference < -15) {
+                winner = awayTeam;
+                confidence = 'high';
+            } else if (difference > 5) {
+                winner = homeTeam;
+                confidence = 'medium';
+            } else {
+                winner = awayTeam;
+                confidence = 'medium';
+            }
+            
+            // Generate score
+            let homeGoals, awayGoals;
+            if (winner === 'draw') {
+                const drawScore = Math.random() < 0.5 ? 1 : 2;
+                homeGoals = drawScore;
+                awayGoals = drawScore;
+            } else if (winner === homeTeam) {
+                homeGoals = Math.floor(Math.random() * 2) + 2;
+                awayGoals = Math.floor(Math.random() * 2);
+            } else {
+                awayGoals = Math.floor(Math.random() * 2) + 2;
+                homeGoals = Math.floor(Math.random() * 2);
+            }
+            
+            const score = `${homeGoals}-${awayGoals}`;
+            
+            // Generate link
+            const baseUrl = window.location.href.replace('prediction-link-generator.html', 'live-prediction.html');
+            const params = new URLSearchParams({
+                home: homeTeam,
+                away: awayTeam,
+                winner: winner,
+                score: score,
+                confidence: confidence,
+                title: matchTitle
+            });
+            
+            const fullUrl = `${baseUrl}?${params.toString()}`;
+            
+            document.getElementById('generatedLink').textContent = fullUrl;
+            document.getElementById('resultSection').classList.add('show');
+            document.getElementById('successMsg').style.display = 'none';
+        }
+        
+        function copyLink() {
+            const link = document.getElementById('generatedLink').textContent;
+            navigator.clipboard.writeText(link).then(() => {
+                document.getElementById('successMsg').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('successMsg').style.display = 'none';
+                }, 3000);
+            });
+        }
+        
+        function previewLink() {
+            const link = document.getElementById('generatedLink').textContent;
+            window.open(link, '_blank');
+        }
+        
+        // Auto-generate on load
+        window.onload = () => {
+            autoPredictAndGenerate();
+        };
+    </script>
+</body>
+</html>
