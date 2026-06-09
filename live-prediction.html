@@ -149,12 +149,6 @@
             margin-bottom: 15px;
         }
         
-        .score {
-            font-size: 48px;
-            font-weight: bold;
-            margin: 15px 0;
-        }
-        
         .confidence {
             font-size: 24px;
             margin-top: 15px;
@@ -248,7 +242,6 @@
             <div class="prediction-text" id="predictionText">
                 I predict Brazil will win! <span class="sparkle">✨</span>
             </div>
-            <div class="score" id="score">2-1</div>
             <div class="confidence" id="confidence">🌟 High Confidence</div>
         </div>
         
@@ -267,7 +260,6 @@
         const homeTeam = params.get('home') || 'Brazil';
         const awayTeam = params.get('away') || 'Argentina';
         const winner = params.get('winner') || homeTeam;
-        const score = params.get('score') || '2-1';
         const confidence = params.get('confidence') || 'high';
         const title = params.get('title') || 'World Cup 2026 - Group Stage';
         
@@ -275,7 +267,6 @@
         document.getElementById('matchTitle').textContent = title;
         document.getElementById('homeTeam').textContent = homeTeam;
         document.getElementById('awayTeam').textContent = awayTeam;
-        document.getElementById('score').textContent = score;
         
         const predictionText = winner === 'draw' 
             ? 'I predict a DRAW! 🤝' 
